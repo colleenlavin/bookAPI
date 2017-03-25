@@ -12,7 +12,16 @@ var Author = db.define('author', {
         type: Sequelize.DATE
     }
 }, {
-        //METHOD FOR GETTING ALL BOOKS BY AUTHOR HERE
+        //METHOD FOR GETTING ALL THE BOOKS BY  ONE AUTHOR HERE
+        classMethods: {
+            findByAuthor: function (query) {
+                return this.findAll({
+                    where: {
+                        title: query
+                    }
+                });
+            }
+        }
     })
 
 
@@ -20,6 +29,9 @@ var Author = db.define('author', {
 
 var Book = db.define('book', {
     title: {
+        type: Sequelize.STRING
+    },
+    authorName:{
         type: Sequelize.STRING
     },
     synopsis: {
@@ -32,13 +44,19 @@ var Book = db.define('book', {
         type: Sequelize.STRING
     }
 }, {
-    //METHOD FOR GETTING BLURB (first 10 chars of synopsis)
-})
+        //METHOD FOR GETTING BLURB (first 10 chars of synopsis)
+        instanceMethods: {
+            blurb: function (query) {
+                var blurby = this.get('content');
+                return blurby.slice(0, 10);
+            }
+        }
+    })
 
-Book.belongsTo(Author)
+Book.belongsTo(Author);
 
 module.exports = {
     db: db,
     Author: Author,
-    Book : Book
+    Book: Book
 }

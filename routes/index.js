@@ -1,10 +1,16 @@
 var router = require('express').Router();
 var db = require('../models/db').db;
-var author =  require('../models/db').Author;
+var author = require('../models/db').Author;
 var book = require('../models/db').Book;
 
 //ROUTES TO ADD
-
+router.get('/authors', function (req, res, next) {
+    Article.findAll()
+        .then(function (Articles) {
+            res.json(Articles)
+        })
+        .catch(next);
+})
 /*
     GET All AUTHORS (router.get)
     GET ALL BOOKS (router.get)
@@ -19,7 +25,7 @@ var book = require('../models/db').Book;
 //DAN 201 707 3744
 
 router.get('/', function (req, res, next) {
-    res.setStatus(200).send('Hello')
+    res.status(200).send('Hello')
 })
 
 
