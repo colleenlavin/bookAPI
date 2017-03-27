@@ -5,12 +5,62 @@ var book = require('../models/db').Book;
 
 //ROUTES TO ADD
 router.get('/authors', function (req, res, next) {
-    Article.findAll()
-        .then(function (Articles) {
-            res.json(Articles)
+    author.findAll()
+        .then(function (Author) {
+            res.json(Author)
         })
         .catch(next);
 })
+router.get('/books', function (req, res, next) {
+    author.findAll()
+        .then(function (Book) {
+            res.json(Book)
+        })
+        .catch(next);
+})
+router.post('/:author', function (req, res, next) {
+    author.create({
+        name: req.params.name,
+        language: req.params.language,
+        birthday: req.query.birthday
+    })
+        .catch(next);
+});
+router.post('/:book', function (req, res, next) {
+    book.create({
+        title: req.params.title,
+        authorName: req.params.name,
+        synopsis: blurb(req.query.synopsis),
+        datePublished: req.query.date,
+        isbn: req.query.isbn
+    })
+        .catch(next);
+});
+router.delete('/:book', (req, res, next) => {
+    remove(req.params.name, req.params.index);
+    res.sendStatus(204);
+});
+router.delete('/:book', (req, res, next) => {
+    author.findAll(book)
+        .then(function (book) {
+            remove(req.params.name, req.params.index);
+        })
+        .catch(next);
+});
+router.get('/author/:id', function (req, res, next) {
+    author.findById(req.params.id)
+        .then(function (book) {
+            res.status().send(book);
+        })
+        .catch(next);
+})
+router.put('/:book/title', function(req, res, next) {
+  book.findById(req.params.id)
+    .then(function(book) {
+      book.title();
+    })
+    .catch(next);
+});
 /*
     GET All AUTHORS (router.get)
     GET ALL BOOKS (router.get)

@@ -17,7 +17,7 @@ var Author = db.define('author', {
             findByAuthor: function (query) {
                 return this.findAll({
                     where: {
-                        title: query
+                       authorName: query
                     }
                 });
             }
@@ -31,7 +31,7 @@ var Book = db.define('book', {
     title: {
         type: Sequelize.STRING
     },
-    authorName:{
+    authorName: {
         type: Sequelize.STRING
     },
     synopsis: {
