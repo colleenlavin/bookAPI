@@ -14,12 +14,14 @@ var Author = db.define('author', {
 }, {
         //METHOD FOR GETTING ALL THE BOOKS BY  ONE AUTHOR HERE
         classMethods: {
-            findByAuthor: function (query) {
-                return this.findAll({
+            findByAuthor: function () {
+                return Book.findAll({
                     where: {
-                       authorName: query
+                       author_id: authorId
                     }
-                });
+                }).then(function(thebooks){
+                    return thebooks
+            });
             }
         }
     })
@@ -47,13 +49,14 @@ var Book = db.define('book', {
         //METHOD FOR GETTING BLURB (first 10 chars of synopsis)
         instanceMethods: {
             blurb: function (query) {
-                var blurby = this.get('content');
+                var blurby = this.synopsis;
                 return blurby.slice(0, 10);
             }
         }
     })
 
 Book.belongsTo(Author);
+Author.hasMany(Book);
 
 module.exports = {
     db: db,

@@ -1,65 +1,73 @@
 var router = require('express').Router();
 var db = require('../models/db').db;
-var author = require('../models/db').Author;
-var book = require('../models/db').Book;
+var Author = require('../models/db').Author;
+var Book = require('../models/db').Book;
 
 //ROUTES TO ADD
 router.get('/authors', function (req, res, next) {
-    author.findAll()
-        .then(function (Author) {
-            res.json(Author)
+    Author.findAll()
+        .then(function (authors) {
+            res.send(authors)
         })
         .catch(next);
 })
 router.get('/books', function (req, res, next) {
-    author.findAll()
-        .then(function (Book) {
-            res.json(Book)
+    Book.findAll()
+        .then(function (books) {
+            res.json({ books: books })
         })
         .catch(next);
 })
-router.post('/:author', function (req, res, next) {
-    author.create({
-        name: req.params.name,
-        language: req.params.language,
-        birthday: req.query.birthday
-    })
-        .catch(next);
-});
-router.post('/:book', function (req, res, next) {
-    book.create({
-        title: req.params.title,
-        authorName: req.params.name,
-        synopsis: blurb(req.query.synopsis),
-        datePublished: req.query.date,
-        isbn: req.query.isbn
-    })
-        .catch(next);
-});
-router.delete('/:book', (req, res, next) => {
-    remove(req.params.name, req.params.index);
-    res.sendStatus(204);
-});
-router.delete('/:book', (req, res, next) => {
-    author.findAll(book)
-        .then(function (book) {
-            remove(req.params.name, req.params.index);
+router.post('/', function (req, res, next) {
+    Author.create(req.body)
+        .then(function (newAuthor) {
+            res.send(newAuthor)
         })
         .catch(next);
+});
+router.post('/', function (req, res, next) {
+    Book.create(req.body)
+        .then(function (newBook) {
+            res.send(newBook)
+        })
+        .catch(next);
+});
+router.delete('/:bookId', (req, res, next) => {
+    // remove(req.params.name, req.params.index);
+    // res.sendStatus(204);
+    Book.findById(req.params.bookId)
+        .then(function (book) {
+            return book.destroy()
+        })
+        .then(function () {
+            res.send('Burn the book!')
+        })
+});
+router.delete('/:authorId', (req, res, next) => {
+    Author.findById(req.params.authorId)
+        .then(function (author) {
+            return author.destroy()
+        })
+        .then(function () {
+            res.send('This author bust be silenced!')
+        })
 });
 router.get('/author/:id', function (req, res, next) {
-    author.findById(req.params.id)
-        .then(function (book) {
-            res.status().send(book);
+    Author.findById(req.params.id)
+        .then(function (author) {
+            res.status(200).send(author);
         })
         .catch(next);
 })
-router.put('/:book/title', function(req, res, next) {
-  book.findById(req.params.id)
-    .then(function(book) {
-      book.title();
-    })
-    .catch(next);
+router.put('/:bookId', function (req, res, next) {
+    Book.findById(req.params.bookId)
+        .then(function (book) {
+           return book.update(req.body);
+        })
+        .then( function(newBook){
+            res.send(newBook);
+        })
+        .catch(next);
 });
 /*
     GET All AUTHORS (router.get)
